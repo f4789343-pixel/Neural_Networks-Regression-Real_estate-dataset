@@ -46,7 +46,7 @@ b1 = np.random.randn(4)
 
 w2 = np.random.randn(1,4)
 b2 = np.zeros(1)
-lr = 0.0000001
+lr = 0.000001
 
 def ReLU(z):
   soft = []
@@ -61,17 +61,17 @@ def ReLU(z):
    soft.append(s)
   return soft
 
-for epoch in range(1000):
+for epoch in range(5000):
   for i in range(len(x_train_scaled)):
     z = w1 @ x_train_scaled[i] + b1
     a = ReLU(z)
     y_pred = w2 @ a + b2
-    error = y_pred - y_train_scaled[i]
+    error = y_pred - y_train[i]
     loss = np.mean((error)**2)
     dw2 = a * error
     db2 = error
 
-    delta = (w2.T@error)*ReLU(z)
+    delta = (w2.T@error)*(z > 0).astype(float)
     dw1 = delta[:,None] * x_train_scaled[i][None,:]
     db1 = delta
 
@@ -88,7 +88,7 @@ for i in range(len(x_test)):
   y_test_pred = w2 @ a_t + b2
   predictions.append(y_test_pred)
 print('predictions:',predictions)
-print('y test:',y_test_scaled)
+print('y test:',y_test)
 
 mse = np.mean((predictions - y_test)**2)
 rmse = np.sqrt(mse)
