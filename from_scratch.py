@@ -46,20 +46,10 @@ b1 = np.random.randn(4)
 
 w2 = np.random.randn(1,4)
 b2 = np.zeros(1)
-lr = 0.000001
+lr = 0.0001
 
 def ReLU(z):
-  soft = []
-  e = []
-  t = 0
-  for i in z:
-    x = np.exp(i)
-    t += x
-    e.append(x)
-  for i in e:
-   s = i / t
-   soft.append(s)
-  return soft
+  return np.maximum(0,z)
 
 for epoch in range(5000):
   for i in range(len(x_train_scaled)):
@@ -87,12 +77,20 @@ for i in range(len(x_test)):
   a_t = ReLU(z_t)
   y_test_pred = w2 @ a_t + b2
   predictions.append(y_test_pred)
-print('predictions:',predictions)
-print('y test:',y_test)
 
+predictions = np.array(predictions).flatten()
+print(predictions.shape)
+print(y_test.shape)
+
+mae = np.mean(abs(predictions - y_test))
 mse = np.mean((predictions - y_test)**2)
 rmse = np.sqrt(mse)
+ss_total = np.sum((y_test - np.mean(y_test))**2)
+ss_residual = np.sum((predictions - y_test)**2)
+r2 = 1 - (ss_residual / ss_total)
 
+print('MAE:', mae)
 print("MSE:", mse)
 print("RMSE:", rmse)
+print('R2 Score:', r2)
     
